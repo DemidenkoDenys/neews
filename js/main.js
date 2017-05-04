@@ -1,0 +1,73 @@
+$(window).on("load", function(){
+
+});
+
+$(document).ready(function(){
+	$('#picture').on('change', function(){ readURL(this); });
+	$('input[type=reset]').on('click', function(){ $('.picture-preview').attr('src', 'img/clear.png'); });
+	$('.number').on('mousemove', function(){ $(this).children('a').children('span').css({"opacity": "1"}); });
+	$('.number').on('mouseout', function(){ $(this).children('a').children('span').css({"opacity": "0.1"}); });
+	$('.ban').on('click', function(){ $('.redact').val('0'); });
+	$('.approve').on('click', function(){ $('.redact').val('1'); });
+
+	// запрет копирование
+		$("body").on("contextmenu", false);
+		document.ondragstart = noselect;
+		document.onselectstart = noselect;
+		document.oncontextmenu = noselect;
+		function noselect() {return false;}
+	// запрет копирование
+});
+
+function readURL(input){
+	if(input.files && input.files[0]){
+		var reader = new FileReader();
+		reader.onload = function(e){ $('.picture-preview').attr('src', e.target.result); }
+		reader.readAsDataURL(input.files[0]);
+	}
+}
+
+Share={
+	vkontakte: function(purl, ptitle, pimg, text) {
+		url  = 'http://vkontakte.ru/share.php?';
+		url += 'url='          + encodeURIComponent(purl);
+		url += '&title='       + encodeURIComponent(ptitle);
+		url += '&description=' + encodeURIComponent(text);
+		url += '&image='       + encodeURIComponent(pimg);
+		url += '&noparse=true';
+		Share.popup(url);
+	},
+	odnoklassniki: function(purl, text) {
+		url  = 'http://www.odnoklassniki.ru/dk?st.cmd=addShare&st.s=1';
+		url += '&st.comments=' + encodeURIComponent(text);
+		url += '&st._surl='    + encodeURIComponent(purl);
+		Share.popup(url);
+	},
+	facebook: function(purl, ptitle, pimg, text) {
+		url  = 'http://www.facebook.com/sharer.php?s=100';
+		url += '&p[title]='     + encodeURIComponent(ptitle);
+		url += '&p[summary]='   + encodeURIComponent(text);
+		url += '&p[url]='       + encodeURIComponent(purl);
+		url += '&p[images][0]=' + encodeURIComponent(pimg);
+		Share.popup(url);
+	},
+	twitter: function(purl, ptitle) {
+		url  = 'http://twitter.com/share?';
+		url += 'text='      + encodeURIComponent(ptitle);
+		url += '&url='      + encodeURIComponent(purl);
+		url += '&counturl=' + encodeURIComponent(purl);
+		Share.popup(url);
+	},
+	mailru: function(purl, ptitle, pimg, text) {
+		url  = 'http://connect.mail.ru/share?';
+		url += 'url='          + encodeURIComponent(purl);
+		url += '&title='       + encodeURIComponent(ptitle);
+		url += '&description=' + encodeURIComponent(text);
+		url += '&imageurl='    + encodeURIComponent(pimg);
+		Share.popup(url)
+	},
+
+	popup: function(url) {
+		window.open(url,'','toolbar=0,status=0,width=626,height=436');
+	}
+};
